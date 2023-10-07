@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 500px;
+}
+
+figure {
+  max-width: 300px;
+}
+
+img {
+  max-width: 100%;
+}
+
+form {
+  margin: 1rem;
+}
+
+a {
+  margin: 0.5rem;
+}
+
+a.nav {
+  text-decoration: none;
+  text-align: center;
+  color: black;
+}
+
+.clicked {
+  color: darkgray;
+  background-color: azure;
+}

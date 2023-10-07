@@ -1,0 +1,43 @@
+
+ 
+  
+  <% if (errMsg) { %>
+    <h2>Error: <%= errMsg %>
+    </h2>
+  <% } %>
+
+  <form action="/" method="post">
+    <label for="original-url">Original URL: </label>
+    <input type="text" name="originalUrl" id="original-url" placeholder="Enter your full-length URL here" <% if
+      (originalUrl) { %>
+    value=<%= originalUrl %>
+      <% } %>
+        >
+        <button>Generate</button>
+  </form>
+
+  <% if (shortUrl) { %>
+    <form>
+      <label for="short-url">Short URL: </label>
+      <input type="text" id="short-url" 
+        value=<%=baseUrl + shortUrl %> >
+      <button id="copy-button">Copy</button>
+    </form>
+  <% } %>
+
+  <% if (!showHistory) {%>
+    <a href="/history">Show History</a>
+  <% } else { %>
+    <a href="/">Hide History</a>
+  <% } %>
+
+  <script>
+    document.querySelector("#copy-button")
+      .addEventListener("click", (e) => {
+        e.preventDefault()
+        const input = document.querySelector('#short-url')
+        navigator.clipboard.writeText(input.value)
+        e.target.innerText = 'Copied!!'
+        e.target.classList.add('clicked')
+      })
+  </script>

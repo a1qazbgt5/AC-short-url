@@ -17,6 +17,7 @@ app.use((req, res, next) => {
   res.locals.originalUrl = ''
   res.locals.shortUrl = ''
   res.locals.errMsg = ''
+  res.locals.showHistory = false
   res.locals.baseUrl = baseUrl
   next()
 })
@@ -44,16 +45,17 @@ app.post('/', async (req, res) => {
   }
 })
 
+app.get('/history', (req, res) => {
+  return res.render('index', { showHistory: true })
+})
 
 app.get('/:shortUrl', async (req, res) => {
   try {
     const { shortUrl } = req.params
     const foundUrlSet = await UrlSet.findOne({ shortUrl })
-    if (foundUrlSet) {
-      console.log(foundUrlSet.originalUrl)
+    if (foundUrlSet) 
       return res.status(301).redirect('https://' + foundUrlSet.originalUrl)
-    }
-    res.render('index', {errMsg : 'Page not found. Please comfirm again or generate a new short-URL.'})
+    res.status(404).render('index', {errMsg : 'Page not found. Please comfirm again or generate a new short-URL.'})
   } catch (e) {
     res.status(400).send(e)
   }
