@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Short-URL Generator</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 500px;
+    }
+    figure {
+      max-width: 300px;
+    }
+    img {
+      max-width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Short-URL Generator</h1>
+  <figure>
+    <img src="/ACimage.png" alt="">
+  </figure>
+  <form action="/" method="post">
+    <label for="original-url">Original URL: </label>
+    <input type="text" name="originalUrl" id="original-url"
+      placeholder="Enter your full-length URL here"
+      <% if (originalUrl) { %>
+        value=<%= originalUrl %>
+      <% } %>
+    >
+    <button>Generate</button>
+  </form>
+
+  <% if (shortUrl) { %>
+    <form>
+      <label for="short-url">Short URL: </label>
+      <input type="text" id="short-url"value=<%= baseUrl + shortUrl %> >
+      <button id="copy-button">Copy</button>
+    </form>
+  <% } %>
+
+  <% if (errMsg) { %>
+    <h2>Error: <%= errMsg %></h2>
+  <% } %>
+
+  <script>
+    document.querySelector("#copy-button")
+      .addEventListener("click", (e) => {
+        e.preventDefault()
+        const input = document.querySelector('#short-url')
+        navigator.clipboard.writeText(input.value)
+        e.target.innerText = 'Copied!!'
+      })
+  </script>
+</body>
+</html>
