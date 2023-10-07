@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
+const session = require('express-session')
 const UrlSet = require('./models/url-set-model')
 
 const baseUrl = 'localhost:3000/'
@@ -13,24 +14,37 @@ mongoose.connect("mongodb://127.0.0.1:27017/AC")
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 app.set('view engine', 'ejs')
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}))
 app.use((req, res, next) => {
-  res.locals.originalUrl = ''
-  res.locals.shortUrl = ''
-  res.locals.errMsg = ''
-  res.locals.showHistory = false
-  res.locals.baseUrl = baseUrl
+  if (!req.session.urlSets) req.session.urlSets = []
+  res.locals = {
+    originalUrl: '',
+    shortUrl: '',
+    errMsg: '',
+    showHistory: false,
+    baseUrl: baseUrl,
+    urlSets: req.session.urlSets
+  }
   next()
 })
 
 
 app.get('/', (req, res) => {
-  res.render('index')
+  return res.render('index')
 })
 
 app.post('/', async (req, res) => {
   try {
-    const { originalUrl } = req.body
+    const originalUrl = req.body.originalUrl.trim()
+    if (!originalUrl) 
+      return res.redirect('/')
     let shortUrl
+    // searching DB, create a new one if not exist
     const foundUrl = await UrlSet.findOne({ originalUrl })
     if (foundUrl) {
       shortUrl = foundUrl.shortUrl
@@ -39,9 +53,14 @@ app.post('/', async (req, res) => {
         while (await UrlSet.findOne({ shortUrl }))
       UrlSet.create({ originalUrl, shortUrl })
     }
-    res.render('index', { originalUrl, shortUrl })
+    // set session, recording urlSet made by the user
+    if ( !req.session.urlSets.find(
+      (urlSet) => urlSet.shortUrl === shortUrl) )
+        req.session.urlSets.push({ originalUrl, shortUrl })
+    return res.render('index', { originalUrl, shortUrl })
+    
   } catch (e) {
-    res.status(500).send(e)
+    return res.status(500).send(e)
   }
 })
 

@@ -1,0 +1,30 @@
+
+
+<% if (!showHistory) {%>
+  <a href="/history">Show History</a>
+
+<% } else { %>
+  <a href="/">Hide History</a>
+
+  <% if (urlSets.length===0) { %>
+    <p>No result</p>
+  <% } else { %>
+    <table>
+      <% urlSets.forEach((urlSet)=> { %>
+        <tr>
+          <td> <%= urlSet.originalUrl %> </td>
+          <td>
+            <input type="text"
+              class="short-url"
+              value=<%= baseUrl + urlSet.shortUrl %>
+              readonly />
+            <button class="copy-button">Copy</button>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } %>
+
+<% } %>
+
+

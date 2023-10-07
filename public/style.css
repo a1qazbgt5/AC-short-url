@@ -31,3 +31,15 @@ a.nav {
   color: darkgray;
   background-color: azure;
 }
+
+table, tr, td {
+  border: 1px solid darkslategrey;
+}
+
+table {
+  margin: 1rem;
+}
+
+td {
+  padding: 0.3rem 1rem;
+}

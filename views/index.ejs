@@ -14,7 +14,22 @@
       <img src="/ACimage.png" alt="">
     </figure>
   </a>
+
   <%- include('generate') %>
+
+  <%- include('history') %>
+
+  <script>
+    document.addEventListener("click", (e) => {
+        if (!e.target.matches(".copy-button")) return
+        e.preventDefault()
+        const input = e.target.parentNode
+          .querySelector('.short-url')
+        navigator.clipboard.writeText(input.value)
+        e.target.innerText = 'Copied!!'
+        e.target.classList.add('clicked')
+    })
+  </script>
 
 </body>
 </html>
