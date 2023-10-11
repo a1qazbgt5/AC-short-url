@@ -8,7 +8,7 @@ const baseUrl = 'localhost:3000/'
 const stringLength = 5
 
 mongoose.connect("mongodb://127.0.0.1:27017/AC")
-  .then(() => console.log("Connected to mongodb."))
+  .then(() => console.log("Connected to mongodb"))
   .catch((e) => console.log(e));
 
 app.use(express.urlencoded({ extended: true }))
@@ -54,9 +54,8 @@ app.post('/', async (req, res) => {
       UrlSet.create({ originalUrl, shortUrl })
     }
     // set session, recording urlSet made by the user
-    if ( !req.session.urlSets.find(
-      (urlSet) => urlSet.shortUrl === shortUrl) )
-        req.session.urlSets.push({ originalUrl, shortUrl })
+    (req.session.urlSets.find((urlSet) => urlSet.shortUrl === shortUrl)) ||
+      req.session.urlSets.push({ originalUrl, shortUrl })
     return res.render('index', { originalUrl, shortUrl })
     
   } catch (e) {
@@ -74,9 +73,10 @@ app.get('/:shortUrl', async (req, res) => {
     const foundUrlSet = await UrlSet.findOne({ shortUrl })
     if (foundUrlSet) 
       return res.status(301).redirect('https://' + foundUrlSet.originalUrl)
-    res.status(404).render('index', {errMsg : 'Page not found. Please comfirm again or generate a new short-URL.'})
+    return res.status(404).render('index', {
+      errMsg : 'Page not found. Please comfirm again or generate a new short-URL.'})
   } catch (e) {
-    res.status(400).send(e)
+    return res.status(400).send(e)
   }
 })
 
