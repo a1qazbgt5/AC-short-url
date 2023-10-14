@@ -40,10 +40,15 @@ app.get('/', (req, res) => {
 
 app.post('/', async (req, res) => {
   try {
-    const originalUrl = req.body.originalUrl.trim()
+    let originalUrl = req.body.originalUrl.trim()
+    let shortUrl
+
     if (!originalUrl) 
       return res.redirect('/')
-    let shortUrl
+
+    if (originalUrl.slice(0, 4) !== 'http')
+      originalUrl = 'http://' + originalUrl
+
     // searching DB, create a new one if not exist
     const foundUrl = await UrlSet.findOne({ originalUrl })
     if (foundUrl) {
@@ -53,8 +58,9 @@ app.post('/', async (req, res) => {
         while (await UrlSet.findOne({ shortUrl }))
       UrlSet.create({ originalUrl, shortUrl })
     }
+
     // set session, recording urlSet made by the user
-    (req.session.urlSets.find((urlSet) => urlSet.shortUrl === shortUrl)) ||
+    (req.session.urlSets.some((urlSet) => urlSet.shortUrl === shortUrl)) ||
       req.session.urlSets.push({ originalUrl, shortUrl })
     return res.render('index', { originalUrl, shortUrl })
     
@@ -72,7 +78,7 @@ app.get('/:shortUrl', async (req, res) => {
     const { shortUrl } = req.params
     const foundUrlSet = await UrlSet.findOne({ shortUrl })
     if (foundUrlSet) 
-      return res.status(301).redirect('https://' + foundUrlSet.originalUrl)
+      return res.status(301).redirect(foundUrlSet.originalUrl)
     return res.status(404).render('index', {
       errMsg : 'Page not found. Please comfirm again or generate a new short-URL.'})
   } catch (e) {

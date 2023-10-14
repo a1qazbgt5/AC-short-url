@@ -27,6 +27,11 @@ a.nav {
   color: black;
 }
 
+.error-msg {
+  color: red;
+  font-weight: bold;
+}
+
 .clicked {
   color: darkgray;
   background-color: azure;

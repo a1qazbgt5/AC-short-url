@@ -16,8 +16,8 @@
    ```
 4. Message below indicates the server is working
    ```bash
-  Listening on port 3000
-  Connected to mongodb
+   Listening on port 3000
+   Connected to mongodb
    ```
 5. Press ctrl + c to leave
 
